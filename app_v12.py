@@ -90,6 +90,9 @@ with tab1:
             samples.append((features, label))
 
         current_window = df.iloc[-interval_days:]
+        if len(current_window) < interval_days:
+            st.error("Za mało danych do analizy – spróbuj zwiększyć liczbę świec lub wybrać inny interwał.")
+            st.stop()
         current_features = pd.concat([
             (current_window["close"] / current_window["close"].iloc[0] - 1).reset_index(drop=True),
             (current_window["rsi"] / 100).reset_index(drop=True),
