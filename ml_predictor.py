@@ -22,6 +22,9 @@ def get_features_and_labels(symbol='BTCUSDT', interval='1h', limit=1000, interva
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
     df.set_index('timestamp', inplace=True)
     df = df[['open', 'high', 'low', 'close', 'volume']].astype(float)
+    
+if len(df) < 15:
+    return "NEUTRAL"  # lub inna domyślna odpowiedź
 
     df['rsi'] = ta.momentum.RSIIndicator(df['close'], window=14).rsi()
     df['mfi'] = ta.volume.MFIIndicator(df['high'], df['low'], df['close'], df['volume'], window=14).money_flow_index()
