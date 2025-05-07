@@ -74,7 +74,8 @@ with tab1:
             st.pyplot(fig2)
 
         # Analiza podobieństw
-        st.subheader("🧠 Analiza podobnych przypadków")
+        if show_similarity:
+            st.subheader("🧠 Analiza podobnych przypadków")
         samples = []
         for i in range(len(df) - interval_days - forecast_horizon):
             window = df.iloc[i:i+interval_days]
@@ -91,8 +92,10 @@ with tab1:
 
         current_window = df.iloc[-interval_days:]
         if len(current_window) < interval_days:
-            st.error("Za mało danych do analizy – spróbuj zwiększyć liczbę świec lub wybrać inny interwał.")
-            st.stop()
+            st.warning("Za mało danych do analizy podobieństw – pokazano tylko wykresy i wskaźniki.")
+            show_similarity = False
+        else:
+            show_similarity = True
         current_features = pd.concat([
             (current_window["close"] / current_window["close"].iloc[0] - 1).reset_index(drop=True),
             (current_window["rsi"] / 100).reset_index(drop=True),
