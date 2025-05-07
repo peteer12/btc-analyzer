@@ -50,6 +50,7 @@ with tab1:
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
         df.set_index("timestamp", inplace=True)
         df = df[["open", "high", "low", "close", "volume"]].astype(float)
+        show_similarity = True
 
         # Wskaźniki techniczne
         df["rsi"] = ta.momentum.RSIIndicator(df["close"]).rsi()
