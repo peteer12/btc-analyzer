@@ -51,6 +51,7 @@ with tab1:
         df.set_index("timestamp", inplace=True)
         df = df[["open", "high", "low", "close", "volume"]].astype(float)
         show_similarity = True
+        show_similarity = True
 
         # Wskaźniki techniczne
         df["rsi"] = ta.momentum.RSIIndicator(df["close"]).rsi()
@@ -95,28 +96,28 @@ with tab1:
         if len(current_window) < interval_days:
             st.warning("Za mało danych do analizy podobieństw – pokazano tylko wykresy i wskaźniki.")
             show_similarity = False
-        else:
-            show_similarity = True
-        current_features = pd.concat([
-            (current_window["close"] / current_window["close"].iloc[0] - 1).reset_index(drop=True),
-            (current_window["rsi"] / 100).reset_index(drop=True),
-            (current_window["macd"] / 100).reset_index(drop=True),
-            (current_window["mfi"] / 100).reset_index(drop=True),
-            (current_window["adx"] / 100).reset_index(drop=True)
-        ], axis=1).values.flatten().reshape(1, -1)
 
-        similarities = [(cosine_similarity([f], current_features)[0][0], label) for f, label in samples]
-        top = sorted(similarities, key=lambda x: -x[0])[:10]
-        buy_votes = sum(1 for s in top if s[1] == 1)
-        sell_votes = sum(1 for s in top if s[1] == -1)
-        st.info(f"Z 10 podobnych przypadków: {buy_votes} = BUY, {sell_votes} = SELL")
-
-        if buy_votes > sell_votes:
-            st.success("Wynik analizy: BUY")
-        elif sell_votes > buy_votes:
-            st.error("Wynik analizy: SELL")
-        else:
-            st.warning("Wynik analizy: NEUTRAL")
+        if show_similarity:
+                    current_features = pd.concat([
+                        (current_window["close"] / current_window["close"].iloc[0] - 1).reset_index(drop=True),
+                        (current_window["rsi"] / 100).reset_index(drop=True),
+                        (current_window["macd"] / 100).reset_index(drop=True),
+                        (current_window["mfi"] / 100).reset_index(drop=True),
+                        (current_window["adx"] / 100).reset_index(drop=True)
+                    ], axis=1).values.flatten().reshape(1, -1)
+            
+                    similarities = [(cosine_similarity([f], current_features)[0][0], label) for f, label in samples]
+                    top = sorted(similarities, key=lambda x: -x[0])[:10]
+                    buy_votes = sum(1 for s in top if s[1] == 1)
+                    sell_votes = sum(1 for s in top if s[1] == -1)
+                    st.info(f"Z 10 podobnych przypadków: {buy_votes} = BUY, {sell_votes} = SELL")
+            
+                    if buy_votes > sell_votes:
+                        st.success("Wynik analizy: BUY")
+                    elif sell_votes > buy_votes:
+                        st.error("Wynik analizy: SELL")
+                    else:
+                        st.warning("Wynik analizy: NEUTRAL")
 
 with tab2:
     st.markdown("""
