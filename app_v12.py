@@ -55,7 +55,7 @@ with tab1:
         df["rsi"] = ta.momentum.RSIIndicator(df["close"]).rsi()
         df["macd"] = ta.trend.MACD(df["close"]).macd()
         df["mfi"] = ta.volume.MFIIndicator(df["high"], df["low"], df["close"], df["volume"]).money_flow_index()
-        df["adx"] = ta.trend.ADXIndicator(df["high"], df["low"], df["close"]).adx()
+        df["adx"] = ta.trend.ADXIndicator(df["high"], df["low"], df["close"]).adx() if len(df) >= 14 else np.nan
         df.dropna(inplace=True)
 
         # Wizualizacja wykresu świecowego
